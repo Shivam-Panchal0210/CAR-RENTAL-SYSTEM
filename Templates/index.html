@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Rental System</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Car Rental System</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <table class="table mt-3">
+            <thead>
+                <tr>
+                    <th>Model</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for car in cars %}
+                    <tr>
+                        <td>{{ car.model }}</td>
+                        <td>{{ 'Available' if car.available else 'Rented' }}</td>
+                        <td>
+                            {% if car.available %}
+                                <form action="{{ url_for('rent_car', car_id=car.id) }}" method="post" style="display:inline;">
+                                    <button class="btn btn-primary">Rent</button>
+                                </form>
+                            {% else %}
+                                <form action="{{ url_for('return_car', car_id=car.id) }}" method="post" style="display:inline;">
+                                    <button class="btn btn-danger">Return</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
