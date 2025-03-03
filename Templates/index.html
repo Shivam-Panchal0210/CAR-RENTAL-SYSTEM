@@ -3,42 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car Rental System</title>
+    <title>Car Rental Service</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
     <div class="container">
-        <h1 class="mt-5">Car Rental System</h1>
+        <h1 class="mt-5">Car Rental Service</h1>
+        
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                    <div class="alert alert-{{ category }} mt-3">{{ message }}</div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
-        <table class="table mt-3">
+        
+        <h2 class="mt-5">Available Cars</h2>
+        <table class="table table-striped">
             <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Model</th>
-                    <th>Status</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% for car in cars %}
                     <tr>
+                        <td>{{ car.id }}</td>
                         <td>{{ car.model }}</td>
-                        <td>{{ 'Available' if car.available else 'Rented' }}</td>
                         <td>
                             {% if car.available %}
-                                <form action="{{ url_for('rent_car', car_id=car.id) }}" method="post" style="display:inline;">
-                                    <button class="btn btn-primary">Rent</button>
+                                <form action="{{ url_for('rent_car', car_id=car.id) }}" method="post">
+                                    <button type="submit" class="btn btn-primary">Rent</button>
                                 </form>
                             {% else %}
-                                <form action="{{ url_for('return_car', car_id=car.id) }}" method="post" style="display:inline;">
-                                    <button class="btn btn-danger">Return</button>
-                                </form>
+                                <span class="text-danger">Not Available</span>
                             {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <h2 class="mt-5">Rented Cars</h2>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Model</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for car in rentals %}
+                    <tr>
+                        <td>{{ car.id }}</td>
+                        <td>{{ car.model }}</td>
+                        <td>
+                            <form action="{{ url_for('return_car', car_id=car.id) }}" method="post">
+                                <button type="submit" class="btn btn-success">Return</button>
+                            </form>
                         </td>
                     </tr>
                 {% endfor %}
